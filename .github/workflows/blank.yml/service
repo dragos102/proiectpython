@@ -1,0 +1,28 @@
+from domain import *
+class service:
+    def __init__(self,repo,val):
+        self.__repo=repo
+        self.__val=val
+    def adaugare(self,id,titlu,autor,an,h):
+        #aceasta functie adauga o carte in lista de carti
+        #se apeleaza adaugarea propriu-zisa din repository
+        ca=carte(id,titlu,autor,an)
+        self.__repo.adaugare(ca,h)
+    def modificare(self,id1,autor,h):
+        #aceasta functie apeleaza modificarea din repo
+        #pentru a putea modifica toate cartile care au in id valoarea id1 citita de la tastatura de catre utilizator
+        self.__repo.modificare(id1,autor,h)
+    def undo(self,h,i):
+        #aceasta functie apeleaza functia de undo din repository
+        #se face undo la modificarile din lista
+        self.__repo.undo(h,i)
+    def filtrare(self,sir,val):
+        #aceasta functie apeleaza filtrare propriu zisa din repository
+        if sir=='' and int(val)==-1:
+            self.__repo.filt1()
+        if sir!='' and int(val)==-1:
+            self.__repo.filt2(sir)
+        if sir=='' and int(val)!=-1:
+            self.__repo.filt3(val)
+        if sir!='' and int(val)!=-1:
+            self.__repo.filt4(sir,val)
