@@ -1,0 +1,113 @@
+from domain import *
+
+class reposit:
+
+    def __init__(self):
+        self.__lista=[]
+        self.__copie=[]
+        self.__nr=0
+    def adaugare(self,ca,h):
+        #aceasta functie adauga o carte in lista bibliotecii
+        #se preiau datele dina fisiser se adauga cartea si se reintroduc in fisier
+        self.get_file()
+        self.__nr+=1
+        h.append(self.__lista[:])
+        self.__lista.append(ca)
+        self.insert_file()
+    def test_adaugare(self):
+        ca=carte("7","sapte","petru","2020")
+        self.adaugare(ca)
+        self.get_file()
+        n=len(self.__lista)-1
+        assert(self.__lista[n].get_id()=="7")
+        assert (self.__lista[n].get_titlu() == "sapte")
+        assert (self.__lista[n].get_autor() == "petru")
+        assert (self.__lista[n].get_an() == "2020")
+    def modificare(self,id1,autor2,h):
+        #aceasta functie preia datele din fisier si apoi modifica toate cartile
+        #care in campul id contin valoarea id1 ,modificaandu-le la toate autorul
+        #dupa modificare se reintroduc datele in fisier
+        self.get_file()
+        self.__nr+=1
+        h.append(self.__lista[:])
+        for i in range(len(self.__lista)):
+            if id1 in self.__lista[i].get_id():
+                self.__lista[i].set_autor(autor2)
+        self.insert_file()
+    def test_modificare(self):
+        ca=carte("7","sapte","petru","2020")
+        self.adaugare(ca)
+        id1="7"
+        autor="dragos"
+        self.modificare(id1,autor)
+        self.get_file()
+        n=len(self.__lista)-1
+        assert (self.__lista[n].get_autor() == "dragos")
+    def afisare(self,h):
+        for i in range(len(h)):
+            print(str(h[i].get_id()) + ' ' + str(h[i].get_titlu()) + ' ' + str(h[i].get_autor()) + ' ' + str(h[i].get_an()))
+    def undo(self,h,i):
+        #aceasta functie reafiseaza in meniu lista dinainte de o modificare
+        if self.__nr<1:
+            print("nu se mai pot face undo")
+        else :
+            t=int(self.__nr)-i
+            self.__nr-=1
+            self.afisare(h[t])
+            self.__lista=h[t]
+            self.insert_file()
+
+    def get_file(self):
+        #aceasta functie preia datele din fisierul existent
+        #le introduce in lista din repo cu ajutorul careia le vom prelucra
+        self.__lista=[]
+        f=open("srvbiblioteca.txt","r")
+        for l in f:
+            ca=carte.read_line(l)
+            self.__lista.append(ca)
+        f.close()
+    def insert_file(self):
+        #aceasta functie preia datele din lista din repo si le introduce in fisierul bibliotecii
+        f=open("srvbiblioteca.txt","w")
+        for i in range(len(self.__lista)):
+            ca=self.__lista[i]
+            f.write(ca.write_line(self.__lista[i]))
+            f.write('\n')
+        f.close()
+        self.__lista=[]
+    def filt1(self):
+        #aceasta functie afiseaza elementele din fisier in momentul in care nu avem filtru
+        self.get_file()
+        for i in range(len(self.__lista)):
+            print(self.__lista[i].get_id()+' '+self.__lista[i].get_titlu()+' '+self.__lista[i].get_autor()+' '+self.__lista[i].get_an())
+    def filt2(self,sir):
+        #aceasta functie afiseaza cartile din bibiloteca care contin in titlul lor caracatere sir
+        self.get_file()
+        for i in range(len(self.__lista)):
+            if sir in self.__lista[i].get_titlu():
+                print(self.__lista[i].get_id() + ' ' + self.__lista[i].get_titlu() + ' ' + self.__lista[i].get_autor() + ' ' +self.__lista[i].get_an())
+    def filt3(self,val):
+        #aceasta functie afiseaza elementele din biblioteca al carui an de apartie este mai mic decata valoarea val-data de utilizator de la tastatura
+        self.get_file()
+        for i in range(len(self.__lista)):
+            if int(val)> int(self.__lista[i].get_an()):
+                print(self.__lista[i].get_id() + ' ' + self.__lista[i].get_titlu() + ' ' + self.__lista[i].get_autor() + ' ' + self.__lista[i].get_an())
+    def filt4(self,sir,val):
+        #aceasta functie afiseaza elementele din lista al carui an de aparitie este mai mic decat valoarea val,data de utilizator,si al carui titlu
+        #are in componenta caracterele care au caracterele din variabila sir
+        self.get_file()
+        for i in range(len(self.__lista)):
+            if sir in self.__lista[i].get_titlu() and int(val)> int(self.__lista[i].get_an()):
+                print(self.__lista[i].get_id() + ' ' + self.__lista[i].get_titlu() + ' ' + self.__lista[i].get_autor() + ' ' + self.__lista[i].get_an())
+                return self.__lista[i]
+    def test_filt4(self):
+        sir="pas"
+        val="2002"
+        h=[]
+        ca=carte("10","pascalopol","mircea","2000")
+        self.adaugare(ca,h)
+        p=self.filt4(sir,val)
+        assert(p.get_id()=="10")
+        assert (p.get_titlu() == "pascalopol")
+        assert (p.get_autor() == "mircea")
+        assert (p.get_an()== "2000")
