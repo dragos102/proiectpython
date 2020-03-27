@@ -1,0 +1,13 @@
+from ui import *
+from service import *
+from repository import *
+from validare import *
+
+rep=reposit()
+#rep.test_adaugare()
+#rep.test_modificare()
+#rep.test_filt4()
+val=validare()
+srv=service(rep,val)
+ui1=ui(srv)
+ui1.run()
