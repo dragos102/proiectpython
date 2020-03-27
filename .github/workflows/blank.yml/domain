@@ -1,0 +1,70 @@
+class ui:
+    def __init__(self,srv):
+        self.__srv=srv
+    def meniu(self):
+        print("Bine ati venit")
+        print("Pentru a adauga o carte apasati tasta 1")
+        print("Pentru a modifica o carte apasati tasta 2")
+        print("Pentru a face undo apasati tasta 3")
+        print("Pentru a seta filtrul apasati tasta 4")
+        print("Pentru a incheia programul apasati tasta 5")
+    def adaugare(self,h):
+        #aceasta functie adauga o carte in lista de carti
+        #se introduc id,titlu,autor,an
+        #se apeleaza adaugarea din service
+        id=input("Introduceti un id")
+        titlu=input("Introduceti un titlu")
+        autor=input("Introduceti un autor")
+        an=input("Introduceti un an")
+        self.__srv.adaugare(id,titlu,autor,an,h)
+    def modificare(self,h):
+        #aceasta functie modifica autorul tuturor cartilor care au in id-ul lor cifra sau valoarea din id citita de la tastatura
+        #se introduce id,autor
+        #se apeleaza functia modificare din service
+        id=input("Introduceti un id")
+        autor=input("Introduceti numele autorului pe care doriti sa il modificati")
+        self.__srv.modificare(id,autor,h)
+    def undo(self,h,i):
+        #aceasta functie apeleaza functia de undo din service
+        #undo se poate face pentru a vedea lista dinainte de modificare
+        self.__srv.undo(h,i)
+    def filtrare(self,sir,val):
+        #aceasta functie schimba filtrele si afiseaza utilizatorului toate modificarile
+        #modificarile sunt observate doar in fisier
+        self.__srv.filtrare(sir,val)
+    def run(self):
+        #aceasta functei reprezinta meniul de tip consola
+        #se introduce fiecare comanda si se executa
+        t=0
+        h=[]
+        sir=''
+        val='-1'
+        i=2
+        while t==0:
+            self.meniu()
+            cmd=input("Introduceti o comanda")
+            cmd=int(cmd)
+            if cmd==1:
+                self.adaugare(h)
+                print(sir+' '+val)
+                self.filtrare(sir,val)
+                i=2
+            if cmd==2:
+                self.modificare(h)
+                print(sir + ' ' + val)
+                self.filtrare(sir,val)
+                i=2
+            if cmd==3:
+                self.undo(h,i)
+                i=i+1
+                print(sir + ' ' + val)
+                self.filtrare(sir,val)
+            if cmd==4:
+                sir=input("Introduceti flitrul de sir")
+                val=input("Introduceti filtrul de valoare")
+                self.filtrare(sir,val)
+                i=2
+            if cmd==5:
+                print("Va multumim pentru utilizare")
+                t=1
+
